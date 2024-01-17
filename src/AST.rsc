@@ -36,7 +36,12 @@ data AExpr(loc src = |tmp:///|)
     | gte(AExpr lhs, AExpr rhs)
     | and(AExpr lhs, AExpr rhs)
     | or(AExpr lhs, AExpr rhs)
+    | \int()
+    | \bool()
+    | \string()
   ;
+
+
 
 
 data AId(loc src = |tmp:///|)
