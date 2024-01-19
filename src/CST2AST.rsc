@@ -36,10 +36,10 @@ default AQuestion cst2ast(Question q) {
     case (Question)`{ <Question* questions> }`:
         return questionBlock([ cst2ast(q) | q <- questions ], src=q.src);
 
-    case (Question)`if (<Expr e>) then <Question q>`:
+    case (Question)`if (<Expr e>) <Question q>`:
         return ifQuestion(cst2ast(e), cst2ast(q), src=q.src);
 
-    case (Question)`if (<Expr e>) then <Question q1> else <Question q2>`:
+    case (Question)`if (<Expr e>) <Question q1> else <Question q2>`:
         return ifElseQuestion(cst2ast(e), cst2ast(q1), cst2ast(q2), src=q.src);
 
     default: throw "Unhandled question: <q>";
@@ -62,8 +62,8 @@ AExpr cst2ast(Expr e) {
     case (Expr)`<Expr e1> \<= <Expr e2>`: return lte(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> \> <Expr e2>`: return gt(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> \>= <Expr e2>`: return gte(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr)`<Expr e1> and <Expr e2>`: return and(cst2ast(e1), cst2ast(e2), src=e.src);
-    case (Expr)`<Expr e1> or <Expr e2>`: return or(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> && <Expr e2>`: return and(cst2ast(e1), cst2ast(e2), src=e.src);
+    case (Expr)`<Expr e1> || <Expr e2>`: return or(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`!<Expr e>`: return neg(cst2ast(e), src=e.src);
 
 

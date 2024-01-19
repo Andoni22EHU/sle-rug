@@ -17,18 +17,46 @@ alias TEnv = rel[loc def, str name, str label, Type \type];
 // To avoid recursively traversing the form, use the `visit` construct
 // or deep match (e.g., `for (/question(...) := f) {...}` ) 
 TEnv collect(AForm f) {
-  return {}; 
+    TEnv tenv = {};
+    visit (f) {
+        case question(str l,AId id, AType t): tenv += {<f.src, id.name, l, t>};
+        case computedQuestion(str l,AId id, AType t, AExpr e): tenv += {<f.src, id.name, l, t>};
+        case ifQuestion(AExpr e, AQuestion q): tenv += collect(q);
+        case ifElseQuestion(AExpr e, AQuestion q1, AQuestion q2): tenv += collect(q1) + collect(q2);
+        case questionBlock(list[AQuestion] qs): tenv += {collect(q) | q <- qs};
+    }
+  return tenv; 
+}
+
+TEnv collect(AQuestion q) {
+    TEnv tenv = {};
+    visit (q) {
+        case question(str l,AId id, AType t): tenv += {<q.src, id.name, l, t>};
+        case computedQuestion(str l,AId id, AType t, AExpr e): tenv += {<q.src, id.name, l, t>};
+        case ifQuestion(AExpr e, AQuestion q): tenv += collect(q);
+        case ifElseQuestion(AExpr e, AQuestion q1, AQuestion q2): tenv += collect(q1) + collect(q2);
+        case questionBlock(list[AQuestion] qs): tenv += {collect(q) | q <- qs};
+    }
+  return tenv; 
 }
 
 set[Message] check(AForm f, TEnv tenv, UseDef useDef) {
-  return {}; 
+  return {checkedQuestion | q<-f.questions,checkedQuestion<- check(q,tenv,useDef)};; 
 }
 
 // - produce an error if there are declared questions with the same name but different types.
 // - duplicate labels should trigger a warning 
 // - the declared type computed questions should match the type of the expression.
 set[Message] check(AQuestion q, TEnv tenv, UseDef useDef) {
-  return {}; 
+    set[Message] msgs = {};
+    visit (q) {
+        case question(str l,AId id, AType t): 
+            if (<q.src, id.name, l, Type t2> in tenv) {
+               
+                
+            };
+    }
+  return msgs; 
 }
 
 // Check operand compatibility with operators.
