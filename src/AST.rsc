@@ -38,7 +38,7 @@ data AExpr(loc src = |tmp:///|)
     | or(AExpr lhs, AExpr rhs)
     | \int()
     | \bool()
-    | \string()
+    | \str()
   ;
 
 
