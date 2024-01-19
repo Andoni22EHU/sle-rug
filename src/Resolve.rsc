@@ -21,13 +21,11 @@ RefGraph resolve(AForm f) = <us, ds, us o ds>
   when Use us := uses(f), Def ds := defs(f);
 
 Use uses(AForm f) {
-  list[Use] questionUses = [uses(q) | q <- f.questions];
-  return { use | uses <- questionUses };
+  return { use | q <- f.questions, use <- uses(q)};
 }
 
 Def defs(AForm f) {
-  list[Def] questionDefs = [defs(q) | q <- f.questions];
-  return { def | defs <- questionDefs };
+  return { def | q <- f.questions, def <- defs(q)};
 }
 
 Use uses(AQuestion q) {
@@ -58,12 +56,18 @@ Use uses(AExpr e) {
     case ref(id): return { <id.src, id.name> };
     case add(lhs, rhs): return uses(lhs) + uses(rhs);
     case sub(lhs, rhs): return uses(lhs) + uses(rhs);
-    // Add cases for other expressions
+    case mul(lhs, rhs): return uses(lhs) + uses(rhs);
+    case div(lhs, rhs): return uses(lhs) + uses(rhs);
+    case neg(expr): return uses(expr);
+    case pos(expr): return uses(expr);
+    case eq(lhs, rhs): return uses(lhs) + uses(rhs);
+    case neq(lhs, rhs): return uses(lhs) + uses(rhs);
+    case lt(lhs, rhs): return uses(lhs) + uses(rhs);
+    case lte(lhs, rhs): return uses(lhs) + uses(rhs);
+    case gt(lhs, rhs): return uses(lhs) + uses(rhs);
+    case gte(lhs, rhs): return uses(lhs) + uses(rhs);
+    case and(lhs, rhs): return uses(lhs) + uses(rhs);
+    case or(lhs, rhs): return uses(lhs) + uses(rhs);
     default: return {};
   }
-}
-
-Def defs(AExpr e) {
-  // For expressions, there are no defining occurrences of names.
-  return {};
 }
