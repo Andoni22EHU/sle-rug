@@ -2,6 +2,8 @@ module CST2AST
 
 import Syntax;
 import AST;
+import String;
+import Boolean;
 
 import ParseTree;
 
@@ -47,7 +49,9 @@ default AQuestion cst2ast(Question q) {
 AExpr cst2ast(Expr e) {
   switch (e) {
     case (Expr)`<Id x>`: return ref(id("<x>", src=x.src), src=x.src);
-    case (Expr)`<Int i>`: return <i>;
+    case (Expr)`<Int i>`: return \int(toInt("<i>"), src=i.src);
+    case (Expr)`<Bool b>`: return \bool(fromString("<b>"), src=b.src);
+    case (Expr)`<Str s>`: return \str("<s>", src=s.src);
     case (Expr)`<Expr e1> + <Expr e2>`: return add(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> - <Expr e2>`: return sub(cst2ast(e1), cst2ast(e2), src=e.src);
     case (Expr)`<Expr e1> * <Expr e2>`: return mul(cst2ast(e1), cst2ast(e2), src=e.src);

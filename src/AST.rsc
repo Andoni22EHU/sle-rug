@@ -36,9 +36,9 @@ data AExpr(loc src = |tmp:///|)
     | gte(AExpr lhs, AExpr rhs)
     | and(AExpr lhs, AExpr rhs)
     | or(AExpr lhs, AExpr rhs)
-    | \int()
-    | \bool()
-    | \str()
+    | \int(int i)
+    | \bool(bool b)
+    | \str(str s)
   ;
 
 
